@@ -1,40 +1,75 @@
 const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
-const Constraint = Matter.Constraint;
-const Body = Matter.Body;
 const Composite = Matter.Composite;
 
 let engine;
 let world;
 let canvas;
-let gameContainer;
 let backgroundImg;
 let candyImg;
-let characterImg;
+let ground;
+let supportImg;
+
+// OM NOM
+let omNomFrames = [];
+let currentFrame = 0;
+let frameDelay = 15;
+let omNom = { x: 505, y: 670, size: 160};
 
 
 function preload() {
-    backgroundImg = loadImage("img/background.jpg", () => console.log("background carregado!"), () => console.log("erro ao carregar background"));
+    backgroundImg = loadImage("img/bg-box.jpeg");
+    supportImg = loadImage("img/support1.png");
     candyImg = loadImage("img/candy.png");
-    characterImg = loadImage("img/character.png");
+
+    omNomFrames.push(loadImage("img/om-nom1.png"));
+    omNomFrames.push(loadImage("img/om-nom2.png"));
+    omNomFrames.push(loadImage("img/om-nom2.png"));
+    omNomFrames.push(loadImage("img/om-nom1.png"));
+    omNomFrames.push(loadImage("img/om-nom3.png"));
+    omNomFrames.push(loadImage("img/om-nom4.png"));
+    omNomFrames.push(loadImage("img/om-nom4.png"));
+    omNomFrames.push(loadImage("img/om-nom5.png"));
+    omNomFrames.push(loadImage("img/om-nom4.png"));
+    omNomFrames.push(loadImage("img/om-nom5.png"));
+    omNomFrames.push(loadImage("img/om-nom6.png"));
 
 }
 
 function setup() {
-    canvas = createCanvas(960, 540);
-    canvas.parent("game-container");
-    gameContainer = document.getElementById("game-container");
+    canvas = createCanvas(1027, 768);
+    engine = Engine.create();
 
-    console.log(backgroundImg);
+    engine.positionIterations = 12;
+    engine.velocityIterations = 10;
+    engine.constraintIterations = 8;
+
+    world = engine.world;
+
+    
 }
 
-function draW() {
+function draw() {
     background(255, 0, 0);
 
     imageMode(CORNER);
 
     image(backgroundImg, 0, 0, width, height);
     Engine.update(engine);
-    
+
+    imageMode(CENTER);
+    image(supportImg, 505, 720, 160, 160);
+    drawOmNom();
+    // ground.display();
+}
+
+function drawOmNom() {
+    if(frameCount % frameDelay === 0) {
+        currentFrame++;
+        if(currentFrame >= omNomFrames.length) {
+            currentFrame = 0;
+        }
+    }
+    image(omNomFrames[currentFrame], omNom.x, omNom.y, omNom.size, omNom.size);
 }
