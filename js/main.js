@@ -17,6 +17,8 @@ let currentFrame = 0;
 let frameDelay = 15;
 let omNom = { x: 505, y: 670, size: 160};
 
+let rope;
+
 
 function preload() {
     backgroundImg = loadImage("img/bg-box.jpeg");
@@ -47,7 +49,7 @@ function setup() {
 
     world = engine.world;
 
-    
+    loadLevel1();
 }
 
 function draw() {
@@ -57,6 +59,8 @@ function draw() {
 
     image(backgroundImg, 0, 0, width, height);
     Engine.update(engine);
+
+    rope.display();
 
     imageMode(CENTER);
     image(supportImg, 505, 720, 160, 160);
