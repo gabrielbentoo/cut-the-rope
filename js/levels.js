@@ -13,6 +13,8 @@ function loadLevel1() {
         size: 40
     });
 
+    ground = new Ground(width /2, height + 10, width, 20);
+
     candy = Bodies.circle(width /2, 320, 25, {
         density: 0.0002,
         restitution: 1,
@@ -21,4 +23,6 @@ function loadLevel1() {
     });
     World.add(world, candy);
     candyCon = new Link(rope, candy);
+
+    gameState = "playing";
 }

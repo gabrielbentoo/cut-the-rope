@@ -11,11 +11,11 @@ class Ground {
     }
 
     display() {
-        let pos = this.body.position;
+        const pos = this.body.position;
         push();
         rectMode(CENTER);
-        fill(0, 0);
         noStroke();
+        fill(0, 0, 0, 0);
         rect(pos.x, pos.y, this.w, this.h);
         pop();
     }
