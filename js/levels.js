@@ -13,7 +13,7 @@ function loadLevel1() {
         size: 40
     });
 
-    ground = new Ground(width /2, height + 10, width, 20);
+    ground = new Ground(width /2, height + 500, width, 20);
 
     candy = Bodies.circle(width /2, 320, 25, {
         density: 0.0002,
@@ -23,6 +23,25 @@ function loadLevel1() {
     });
     World.add(world, candy);
     candyCon = new Link(rope, candy);
+    stars = [];
+    stars.push({
+        x: 500,
+        y: 300,
+        collected: false,
+
+    });
+    stars.push({
+        x: 500,
+        y: 400,
+        collected: false,
+        
+    });
+    stars.push({
+        x: 500,
+        y: 500,
+        collected: false,
+        
+    });
 
     gameState = "playing";
 }

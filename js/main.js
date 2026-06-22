@@ -23,6 +23,9 @@ let rope;
 let pinImg;
 let gameState = "playing";
 
+let stars = [];
+let score = 0;
+
 function preload() {
     backgroundImg = loadImage("img/bg-box.jpeg");
     supportImg = loadImage("img/support1.png");
@@ -64,6 +67,7 @@ function draw() {
     imageMode(CORNER);
 
     image(backgroundImg, 0, 0, width, height);
+    drawStars();
     Engine.update(engine);
 
     drawPins();
@@ -83,10 +87,10 @@ function draw() {
     if(candy) {
         image(candyImg, candy.position.x, candy.position.y, 60, 60);
     }
-  
+    
+    drawGameState();
     checkWin();
     checkLose();
-    drawGameState();
 
     if(candyCon && candyCon.link && candyCon.link.bodyA && candy) {
         stroke(255);
@@ -135,17 +139,26 @@ function checkLose() {
 }
 
 function drawGameState() {
+    if(gameState === "playing") return;
+    push();
+    fill(0, 0, 0);
+    rect(0, 0 , width, height)
     textAlign(CENTER);
     textSize(40);
     fill(255);
-
+    
     if(gameState === "win") {
         text("You win!", width /2, 150);
+        
     }
 
     if(gameState === "lose") {
         text("You lose!", width /2, 150);
     }
+
+    textSize(20);
+    text("Press R to restart", width /2, 250);
+    pop();
 }
 
 function mouseDragged() {
@@ -164,5 +177,45 @@ function mouseDragged() {
 
             break;
         }
+    }
+}
+
+function keyPressed() {
+    if(key === "r" || key === "R") {
+        restartLevel();
+    }
+}
+
+function restartLevel() {
+    if(candy) {
+        World.remove(world, candy);
+        candy = null;
+    }
+
+    if(candyCon) {
+        candyCon.detach();
+        candyCon = null;
+    }
+
+    if(rope && rope.body) {
+        Composite.remove(world, rope.body);
+    }
+
+    if(ground && ground.body) {
+        World.remove(world, ground.body);
+    }
+
+    loadLevel1();
+    gameState = "playing";
+}
+
+function drawStars() {
+    for(let star of stars) {
+        if(star.collected) continue;
+        push();
+        fill(255, 215, 0);
+        stroke(255);
+        circle(star.x, star.y, 30);
+        pop();
     }
 }
