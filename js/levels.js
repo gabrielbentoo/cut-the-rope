@@ -5,6 +5,8 @@ function loadLevel1() {
     engine = Engine.create();
     world = engine.world;
 
+    score = 0;
+    stars = [];
     pins = [];
     rope = new Rope(5, {x: width /2, y: 60});
     pins.push({
@@ -25,19 +27,19 @@ function loadLevel1() {
     candyCon = new Link(rope, candy);
     stars = [];
     stars.push({
-        x: 500,
+        x: 510,
         y: 300,
         collected: false,
 
     });
     stars.push({
-        x: 500,
+        x: 510,
         y: 400,
         collected: false,
         
     });
     stars.push({
-        x: 500,
+        x: 510,
         y: 500,
         collected: false,
         

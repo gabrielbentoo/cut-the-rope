@@ -12,6 +12,7 @@ let candy;
 let candyCon;
 let ground;
 let supportImg;
+let starImg;
 
 // OM NOM
 let omNomFrames = [];
@@ -30,6 +31,7 @@ function preload() {
     backgroundImg = loadImage("img/bg-box.jpeg");
     supportImg = loadImage("img/support1.png");
     candyImg = loadImage("img/candy.png");
+    starImg = loadImage("img/star-cut-the-rope.png");
 
     omNomFrames.push(loadImage("img/om-nom1.png"));
     omNomFrames.push(loadImage("img/om-nom2.png"));
@@ -88,7 +90,9 @@ function draw() {
         image(candyImg, candy.position.x, candy.position.y, 60, 60);
     }
     
+    drawScore();
     drawGameState();
+    checkStars();
     checkWin();
     checkLose();
 
@@ -210,12 +214,34 @@ function restartLevel() {
 }
 
 function drawStars() {
+    imageMode(CENTER);
     for(let star of stars) {
         if(star.collected) continue;
         push();
         fill(255, 215, 0);
         stroke(255);
-        circle(star.x, star.y, 30);
+        image(starImg, star.x, star.y, 40, 40);
         pop();
     }
 }
+
+function checkStars() {
+    if(!candy) return;
+    for(let star of stars) {
+        if(star.collected) continue;
+        let d = dist(candy.position.x, candy.position.y, star.x, star.y);
+
+        if(d < 40) {
+        star.collected = true;
+        score++;
+    }
+    }
+}
+
+function drawScore() {
+    fill(255);
+    textSize(24);
+    textAlign(LEFT);
+    text("⭐ " + score, 20, 40);
+}
+
