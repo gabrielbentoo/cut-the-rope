@@ -13,6 +13,9 @@ let candyCon;
 let ground;
 let supportImg;
 let starImg;
+let gameMusic;
+let musicEnable = true;
+let musicStarted = false;
 
 // OM NOM
 let omNomFrames = [];
@@ -32,6 +35,8 @@ function preload() {
     supportImg = loadImage("img/support1.png");
     candyImg = loadImage("img/candy.png");
     starImg = loadImage("img/star-cut-the-rope.png");
+
+    gameMusic = loadSound("sounds/game-music.mp3");
 
     omNomFrames.push(loadImage("img/om-nom1.png"));
     omNomFrames.push(loadImage("img/om-nom2.png"));
@@ -182,6 +187,12 @@ function mouseDragged() {
             break;
         }
     }
+
+    if(!musicStarted) {
+        gameMusic.setVolume(0.3);
+        gameMusic.loop();
+        musicStarted = true;
+    }
 }
 
 function keyPressed() {
@@ -218,10 +229,12 @@ function drawStars() {
     for(let star of stars) {
         if(star.collected) continue;
         push();
-        fill(255, 215, 0);
-        stroke(255);
-        image(starImg, star.x, star.y, 40, 40);
+        translate(star.x, star.y);
+        let scaleX = abs(cos(star.angle));
+        scale(scaleX, 1);
+        image(starImg, 0, 0, 40, 40);
         pop();
+        star.angle += 0.05;
     }
 }
 
