@@ -30,11 +30,18 @@ let gameState = "playing";
 let stars = [];
 let score = 0;
 
+let bgSoundImg;
+let speakerImg;
+let effectEnable = true;
+
+
 function preload() {
     backgroundImg = loadImage("img/bg-box.jpeg");
     supportImg = loadImage("img/support1.png");
     candyImg = loadImage("img/candy.png");
     starImg = loadImage("img/star-cut-the-rope.png");
+    bgSoundImg = loadImage("img/bg-sound.png");
+    speakerImg = loadImage("img/speaker.png");
 
     gameMusic = loadSound("sounds/game-music.mp3");
 
@@ -258,3 +265,30 @@ function drawScore() {
     text("⭐ " + score, 20, 40);
 }
 
+function drawAudioButtons() {
+    imageMode(CENTER);
+    tint(255, 180);
+
+    image(bgSoundImg, 45, 45, 50, 50);
+    image(speakerImg, 110, 45, 50, 50);
+
+    strokeWeight(3);
+    stroke(220, 40, 40);
+
+    if(!musicEnable) {
+        line(30, 30, 60, 60);
+        line(60, 30, 30, 60);
+    }
+
+    if(!effectEnable) {
+        line(95, 30, 125, 60);
+        line(125, 30, 95, 60);
+    }
+    noStroke();
+}
+
+function mousePressed() {
+    if(dist(mouseX, mouseY, 45, 45) < 25) {
+        toggleMusic();
+    }
+}
