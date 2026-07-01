@@ -17,6 +17,7 @@ let gameMusic;
 let musicEnable = true;
 let musicStarted = false;
 
+
 // OM NOM
 let omNomFrames = [];
 let currentFrame = 0;
@@ -33,6 +34,9 @@ let score = 0;
 let bgSoundImg;
 let speakerImg;
 let effectEnable = true;
+
+const musicButton = {x: 45, y: 45, size: 50};
+const effectButton = {x: 110, y: 45, size: 50};
 
 
 function preload() {
@@ -178,6 +182,15 @@ function drawGameState() {
 }
 
 function mouseDragged() {
+    if(gameState !== "playing") return;
+    if(!musicStarted) {
+        userStartAudio();
+        if(musicEnable) {
+            gameMusic.setVolume(0.3);
+            gameMusic.loop();
+        }
+        musicStarted = true;
+    }
     if(!rope) return;
 
     for(let body of rope.body.bodies) {
@@ -267,28 +280,75 @@ function drawScore() {
 
 function drawAudioButtons() {
     imageMode(CENTER);
-    tint(255, 180);
 
-    image(bgSoundImg, 45, 45, 50, 50);
-    image(speakerImg, 110, 45, 50, 50);
+    if(musicEnable) {
+
+       if(dist(mouseX, mouseY, musicButton.x, musicButton.y) < 25) {
+            tint(255, 255);
+        }
+        else{
+            tint(120, 120);
+        }
+    }
+   // tint(255, 180);
+
+    image(bgSoundImg, musicButton.x, musicButton.y, musicButton.size, musicButton.size);
+    noTint();
+    if(effectEnable) {
+        if(dist(mouseX, mouseY, effectButton.x, effectButton.y) < 25) {
+            tint(255, 255);
+        }
+        else{
+            tint(255, 170);
+        }
+    }
+    else{
+            tint(120, 120);
+        }
+    
+    image(speakerImg, effectButton.x, effectButton.y, effectButton.size, effectButton.size);
+    noTint();
 
     strokeWeight(3);
     stroke(220, 40, 40);
 
+    const r = 15;
+
     if(!musicEnable) {
-        line(30, 30, 60, 60);
-        line(60, 30, 30, 60);
+        line(musicButton.x - r, musicButton.y - r, musicButton.x + r, musicButton.y + r);
+        line(musicButton.x + r, musicButton.y - r, musicButton.x - r, musicButton.y + r);
     }
 
     if(!effectEnable) {
-        line(95, 30, 125, 60);
-        line(125, 30, 95, 60);
+        line(effectButton.x - r, effectButton.y - r, effectButton.x + r, effectButton.y + r);
+        line(effectButton.x + r, effectButton.y - r, effectButton.x - r, effectButton.y + r);
     }
     noStroke();
 }
 
 function mousePressed() {
-    if(dist(mouseX, mouseY, 45, 45) < 25) {
+    if(dist(mouseX, mouseY, musicButton.x, musicButton.y) < musicButton.size / 2) {
         toggleMusic();
+        return;
     }
+
+    if(dist(mouseX, mouseY, effectButton.x, effectButton.y) < effectButton.size /2) {
+        effectEnable = !effectEnable;
+        return;
+    }
+}
+
+function toggleMusic() {
+    musicEnable =  !musicEnable;
+
+    if(musicEnable) {
+        if(!gameMusic.isPlaying()) {
+            gameMusic.setVolume(0.3);
+            gameMusic.loop();
+        }   
+    }
+    else{
+        gameMusic.stop();
+    }
+    
 }
