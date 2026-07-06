@@ -26,7 +26,7 @@ let omNom = { x: 505, y: 670, size: 160};
 
 let rope;
 let pinImg;
-let gameState = "playing";
+let gameState = "menu";
 
 let stars = [];
 let score = 0;
@@ -70,13 +70,8 @@ function setup() {
     canvas = createCanvas(1027, 768);
     engine = Engine.create();
 
-    engine.positionIterations = 12;
-    engine.velocityIterations = 10;
-    engine.constraintIterations = 8;
-
     world = engine.world;
 
-    loadLevel1();
 }
 
 function draw() {
@@ -85,8 +80,13 @@ function draw() {
     imageMode(CORNER);
 
     image(backgroundImg, 0, 0, width, height);
+    if(gameState === "menu") {
+        drawMenu();
+        return;
+    }
+    
+    Engine.update(engine, deltaTime);
     drawStars();
-    Engine.update(engine);
 
     drawPins();
 
@@ -106,11 +106,13 @@ function draw() {
         image(candyImg, candy.position.x, candy.position.y, 60, 60);
     }
     
-    drawScore();
-    drawGameState();
+   
     checkStars();
     checkWin();
     checkLose();
+    drawScore();
+    drawGameState();
+    drawAudioButtons();
 
     if(candyCon && candyCon.link && candyCon.link.bodyA && candy) {
         stroke(255);
@@ -183,14 +185,7 @@ function drawGameState() {
 
 function mouseDragged() {
     if(gameState !== "playing") return;
-    if(!musicStarted) {
-        userStartAudio();
-        if(musicEnable) {
-            gameMusic.setVolume(0.3);
-            gameMusic.loop();
-        }
-        musicStarted = true;
-    }
+    
     if(!rope) return;
 
     for(let body of rope.body.bodies) {
@@ -287,8 +282,11 @@ function drawAudioButtons() {
             tint(255, 255);
         }
         else{
-            tint(120, 120);
+            tint(255, 170);
         }
+    }
+    else{
+        tint(120,120);
     }
    // tint(255, 180);
 
@@ -327,6 +325,15 @@ function drawAudioButtons() {
 }
 
 function mousePressed() {
+    if(gameState === "menu") {
+        userStartAudio();
+        gameMusic.setVolume(0.35);
+        gameMusic.loop();
+        gameState = "playing";
+
+        loadLevel1();
+        return;
+    }
     if(dist(mouseX, mouseY, musicButton.x, musicButton.y) < musicButton.size / 2) {
         toggleMusic();
         return;
@@ -351,4 +358,18 @@ function toggleMusic() {
         gameMusic.stop();
     }
     
+}
+
+function drawMenu() {
+    imageMode(CORNER);
+    image(backgroundImg, 0, 0, width, height);
+    fill(0, 150);
+    rect(0, 0, width, height);
+    textAlign(CENTER);
+    fill(255);
+    textSize(70);
+    text("CUT THE ROPE", width /2, 180);
+
+    textSize(28);
+    text("Clique para jogar", width /2, 300);
 }
