@@ -60,6 +60,7 @@ function preload() {
     star1Sound = loadSound("sounds/star_1.wav");
     star2Sound = loadSound("sounds/star_2.wav");
     star3Sound = loadSound("sounds/star_3.wav");
+    winSound = loadSound("sounds/win.wav");
 
     omNomFrames.push(loadImage("img/om-nom1.png"));
     omNomFrames.push(loadImage("img/om-nom2.png"));
@@ -165,7 +166,7 @@ function checkWin() {
 function checkLose() {
     if(!candy) return;
 
-    if(candy.position.y > height +50) { 
+    if(candy.position.y > height +50 || candy.position.x < -100 || candy.position.x > width +100) { 
         playEffect(breakSound);
         gameState = "lose";
 
@@ -213,16 +214,13 @@ function mouseDragged() {
                 candyCon.detach();
                 candyCon = null;
             }
+            World.remove(world, rope);
 
             break;
         }
     }
 
-    if(!musicStarted) {
-        gameMusic.setVolume(0.3);
-        gameMusic.loop();
-        musicStarted = true;
-    }
+    
 }
 
 function keyPressed() {
@@ -244,14 +242,19 @@ function restartLevel() {
 
     if(rope && rope.body) {
         Composite.remove(world, rope.body);
+        rope = null;
     }
 
     if(ground && ground.body) {
         World.remove(world, ground.body);
+        ground = null;
     }
 
-    loadLevel1();
+    stars = [];
+    score = 0;
     gameState = "playing";
+    loadLevel1();
+    
 }
 
 function drawStars() {
