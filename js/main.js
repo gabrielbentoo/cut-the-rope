@@ -14,6 +14,13 @@ let ground;
 let supportImg;
 let starImg;
 let gameMusic;
+let breakSound;
+let ropeSound;
+let star1Sound;
+let star2Sound;
+let star3Sound;
+let winSound;
+
 let musicEnable = true;
 let musicStarted = false;
 
@@ -48,6 +55,11 @@ function preload() {
     speakerImg = loadImage("img/speaker.png");
 
     gameMusic = loadSound("sounds/game-music.mp3");
+    breakSound = loadSound("sounds/candy_break.wav");
+    ropeSound = loadSound("sounds/rope_get.wav");
+    star1Sound = loadSound("sounds/star_1.wav");
+    star2Sound = loadSound("sounds/star_2.wav");
+    star3Sound = loadSound("sounds/star_3.wav");
 
     omNomFrames.push(loadImage("img/om-nom1.png"));
     omNomFrames.push(loadImage("img/om-nom2.png"));
@@ -142,6 +154,7 @@ function checkWin() {
     let d = dist(candy.position.x, candy.position.y, omNom.x, omNom.y);
 
     if(d < 80) {
+        playEffect(winSound);
         gameState = "win";
 
         World.remove(world, candy);
@@ -153,6 +166,7 @@ function checkLose() {
     if(!candy) return;
 
     if(candy.position.y > height +50) { 
+        playEffect(breakSound);
         gameState = "lose";
 
         World.remove(world, candy);
@@ -192,6 +206,7 @@ function mouseDragged() {
         let d = dist(mouseX, mouseY, body.position.x, body.position.y);
 
         if(d < 20) {
+            playEffect(ropeSound);
             rope.break();
 
             if(candyCon) {
@@ -260,9 +275,20 @@ function checkStars() {
         let d = dist(candy.position.x, candy.position.y, star.x, star.y);
 
         if(d < 40) {
-        star.collected = true;
-        score++;
-    }
+            star.collected = true;
+            score++;
+            switch(score) {
+                case 1: 
+                    playEffect(star1Sound);
+                    break;
+                case 2:
+                    playEffect(star2Sound);
+                    break;
+                case 3:
+                    playEffect(star3Sound);
+                    break;
+            }
+        }
     }
 }
 
@@ -372,4 +398,12 @@ function drawMenu() {
 
     textSize(28);
     text("Clique para jogar", width /2, 300);
+}
+
+function playEffect(sound) {
+    if(!effectEnable) return;
+    if(sound.isPlaying()) {
+        sound.stop();
+    }
+    sound.play();
 }
