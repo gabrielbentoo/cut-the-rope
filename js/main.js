@@ -13,6 +13,8 @@ let candyCon;
 let ground;
 let supportImg;
 let starImg;
+let restartImg;
+let pauseImg;
 let gameMusic;
 let breakSound;
 let ropeSound;
@@ -23,6 +25,8 @@ let winSound;
 
 let musicEnable = true;
 let musicStarted = false;
+let paused = false;
+
 
 
 // OM NOM
@@ -44,7 +48,8 @@ let effectEnable = true;
 
 const musicButton = {x: 45, y: 45, size: 50};
 const effectButton = {x: 110, y: 45, size: 50};
-
+const restartButton = {x: 0, y: 45, size: 50};
+const pauseButton = {x: 0, y:45, size: 50};
 
 function preload() {
     backgroundImg = loadImage("img/bg-box.jpeg");
@@ -53,6 +58,8 @@ function preload() {
     starImg = loadImage("img/star-cut-the-rope.png");
     bgSoundImg = loadImage("img/bg-sound.png");
     speakerImg = loadImage("img/speaker.png");
+    pauseImg = loadImage("img/pause.png");
+    restartImg = loadImage("img/restart.png");
 
     gameMusic = loadSound("sounds/game-music.mp3");
     breakSound = loadSound("sounds/candy_break.wav");
@@ -84,7 +91,8 @@ function setup() {
     engine = Engine.create();
 
     world = engine.world;
-
+    restartButton.x = width -110;
+    pauseButton.x = width -45;
 }
 
 function draw() {
@@ -98,9 +106,11 @@ function draw() {
         return;
     }
     
-    Engine.update(engine, deltaTime);
+    if(!paused) {
+        Engine.update(engine, deltaTime);
+    }
+    
     drawStars();
-
     drawPins();
 
     if(ground) {
@@ -336,6 +346,27 @@ function drawAudioButtons() {
     image(speakerImg, effectButton.x, effectButton.y, effectButton.size, effectButton.size);
     noTint();
 
+    if(dist(mouseX, mouseY, restartButton.x, restartButton.y) < 25) {
+        tint(255);
+    }
+    else{
+        tint(255,170);   
+    }
+
+    
+    image(restartImg, restartButton.x, restartButton.y, restartButton.size, restartButton.size);
+    noTint();
+    
+    if(dist(mouseX, mouseY, pauseButton.x, pauseButton.y) < 25) {
+        tint(255);
+    }
+    else{
+        tint(255,170);   
+    }
+
+    image(pauseImg, pauseButton.x, pauseButton.y, pauseButton.size, pauseButton.size);
+    noTint();
+
     strokeWeight(3);
     stroke(220, 40, 40);
 
@@ -351,6 +382,9 @@ function drawAudioButtons() {
         line(effectButton.x + r, effectButton.y - r, effectButton.x - r, effectButton.y + r);
     }
     noStroke();
+
+    
+    
 }
 
 function mousePressed() {
