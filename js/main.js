@@ -15,6 +15,7 @@ let supportImg;
 let starImg;
 let restartImg;
 let pauseImg;
+let playImg;
 let gameMusic;
 let breakSound;
 let ropeSound;
@@ -51,6 +52,9 @@ const effectButton = {x: 110, y: 45, size: 50};
 const restartButton = {x: 0, y: 45, size: 50};
 const pauseButton = {x: 0, y:45, size: 50};
 
+let cuts = [];
+
+
 function preload() {
     backgroundImg = loadImage("img/bg-box.jpeg");
     supportImg = loadImage("img/support1.png");
@@ -60,7 +64,9 @@ function preload() {
     speakerImg = loadImage("img/speaker.png");
     pauseImg = loadImage("img/pause.png");
     restartImg = loadImage("img/restart.png");
+    playImg = loadImage("img/play.png");
 
+    //sons
     gameMusic = loadSound("sounds/game-music.mp3");
     breakSound = loadSound("sounds/candy_break.wav");
     ropeSound = loadSound("sounds/rope_get.wav");
@@ -69,6 +75,7 @@ function preload() {
     star3Sound = loadSound("sounds/star_3.wav");
     winSound = loadSound("sounds/win.wav");
 
+    //om nom
     omNomFrames.push(loadImage("img/om-nom1.png"));
     omNomFrames.push(loadImage("img/om-nom2.png"));
     omNomFrames.push(loadImage("img/om-nom2.png"));
@@ -119,6 +126,7 @@ function draw() {
 
     if(rope) {
         rope.display();
+        drawCuts();
     }
     
     imageMode(CENTER);
@@ -140,6 +148,17 @@ function draw() {
     if(candyCon && candyCon.link && candyCon.link.bodyA && candy) {
         stroke(255);
         line(candyCon.link.bodyA.position.x, candyCon.link.bodyA.position.y, candy.position.x, candy.position.y);
+    }
+
+    if(paused) {
+        fill(0, 180);
+        rect(0, 0, width, height);
+        textAlign(CENTER);
+        fill(255);
+        textSize(60);
+        text("paused", width /2, height /2);
+        textSize(22);
+        text("click at play button to continue", width /2, height /2 + 50);
     }
 }
 
@@ -209,6 +228,7 @@ function drawGameState() {
 }
 
 function mouseDragged() {
+    if(paused) return;
     if(gameState !== "playing") return;
     
     if(!rope) return;
@@ -218,6 +238,14 @@ function mouseDragged() {
 
         if(d < 20) {
             playEffect(ropeSound);
+            cuts.push({
+                x1: pmouseX,
+                y1: pmouseY,
+                x2: mouseX,
+                y2: mouseY,
+                life: 12
+            });
+
             rope.break();
 
             if(candyCon) {
@@ -364,7 +392,13 @@ function drawAudioButtons() {
         tint(255,170);   
     }
 
-    image(pauseImg, pauseButton.x, pauseButton.y, pauseButton.size, pauseButton.size);
+    if(paused) {
+        image(playImg, pauseButton.x, pauseButton.y, pauseButton.size, pauseButton.size);
+    }
+    else {
+        image(pauseImg, pauseButton.x, pauseButton.y, pauseButton.size, pauseButton.size);
+    }
+    
     noTint();
 
     strokeWeight(3);
@@ -406,6 +440,16 @@ function mousePressed() {
         effectEnable = !effectEnable;
         return;
     }
+
+    if(dist(mouseX, mouseY, restartButton.x, restartButton.y) < restartButton.size /2) {
+        restartLevel();
+        return;
+    }
+
+    if(dist(mouseX, mouseY, pauseButton.x, pauseButton.y) < pauseButton.size /2) {
+        paused = !paused;
+        return; 
+    }
 }
 
 function toggleMusic() {
@@ -443,4 +487,19 @@ function playEffect(sound) {
         sound.stop();
     }
     sound.play();
+}
+
+function drawCuts() {
+    strokeWeight(4);
+    for(let i = cuts.length -1; i >= 0; i--) {
+        let c = cuts[i];
+        stroke(255, map(c.life, 0, 12, 0, 255));
+        line(c.x1, c.y1, c.x2, c.y2);
+        c.life--;
+
+        if(c.life <= 0) {
+            cuts.splice(i, 1);
+        }
+    }
+    noStroke();
 }
