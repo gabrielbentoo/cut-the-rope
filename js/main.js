@@ -490,11 +490,72 @@ function playEffect(sound) {
 }
 
 function drawCuts() {
-    strokeWeight(4);
+    noFill();
+   // strokeWeight(4);
     for(let i = cuts.length -1; i >= 0; i--) {
         let c = cuts[i];
-        stroke(255, map(c.life, 0, 12, 0, 255));
-        line(c.x1, c.y1, c.x2, c.y2);
+        let alpha = map(c.life, 0, 12, 0, 255);
+       // stroke(255, map(c.life, 0, 12, 0, 255));
+        // line(c.x1, c.y1, c.x2, c.y2);
+        let mx = (c.x1 + c.x2) /2;
+        let my = (c.y1 + c.y2) /2;
+        let dx = c.x2 - c.x1;
+        let dy = c.y2 - c.y1;
+        let px = -dy;
+        let py = dx;
+        let len = sqrt(px * px + py * py);
+        if(len !=0) {
+            px /= len;
+            py /= len;
+        }
+        let curva = 20;
+        mx += px * curva;
+        my += py * curva;
+        for(let j = 0; j < 8; j++) {
+            let t = j /7;
+            let offset = map(t, 0, 1, -6, 6);
+            let w = 8 - abs(offset);
+
+            stroke(180, 230, 255, alpha * 0.45);
+            strokeWeight(w + 2);
+            beginShape();
+            curveVertex(c.x1 + px * offset * 0.2, c.y + py * offset * 0.2);
+            curveVertex(c.x1 + px * offset * 0.2, c.y + py * offset * 0.2);
+            curveVertex(mx + px * offset, my + py * offset);
+            curveVertex(c.x2 + px * offset * 0.2, c.y2 + py * offset * 0.2);
+            curveVertex(c.x2 + px * offset * 0.2, c.y2 + py * offset * 0.2);
+            endShape();
+            stroke(255, alpha);
+            strokeWeight(3);
+            beginShape();
+            curveVertex(c.x1, c.y1);
+            curveVertex(c.x1, c.y1);
+            curveVertex(mx, my);
+            curveVertex(c.x2, c.y2);
+            curveVertex(c.x2, c.y2);
+            endShape();
+        }   
+
+        /* stroke(180, 230, 255, alpha);
+        strokeWeight(10);
+        beginShape();
+        curveVertex(c.x1, c.y1);
+        curveVertex(c.x1, c.y1);
+        curveVertex(mx, my);
+        curveVertex(c.x2, c.y2);
+        curveVertex(c.x2, c.y2);
+        endShape();
+
+        stroke(255, 255, 255, alpha);
+        strokeWeight(4);
+        beginShape();
+        curveVertex(c.x1, c.y1);
+        curveVertex(c.x1, c.y1);
+        curveVertex(mx, my);
+        curveVertex(c.x2, c.y2);
+        curveVertex(c.x2, c.y2);
+        endShape(); */
+
         c.life--;
 
         if(c.life <= 0) {
