@@ -42,6 +42,8 @@ let gameState = "menu";
 
 let stars = [];
 let score = 0;
+let starFilledImg;
+let starEmptyImg;
 
 let bgSoundImg;
 let speakerImg;
@@ -65,6 +67,8 @@ function preload() {
     pauseImg = loadImage("img/pause.png");
     restartImg = loadImage("img/restart.png");
     playImg = loadImage("img/play.png");
+    starFilledImg = loadImage("img/estrela-preenchida-cut-the-rope.png");
+    starEmptyImg = loadImage("img/estrela-vazada-cut-the-rope.png");
 
     //sons
     gameMusic = loadSound("sounds/game-music.mp3");
@@ -141,7 +145,7 @@ function draw() {
     checkStars();
     checkWin();
     checkLose();
-    drawScore();
+    drawStarScore();
     drawGameState();
     drawAudioButtons();
 
@@ -333,12 +337,7 @@ function checkStars() {
     }
 }
 
-function drawScore() {
-    fill(255);
-    textSize(24);
-    textAlign(LEFT);
-    text("⭐ " + score, 20, 40);
-}
+
 
 function drawAudioButtons() {
     imageMode(CENTER);
@@ -563,4 +562,21 @@ function drawCuts() {
         }
     }
     noStroke();
+}
+
+function drawStarScore() {
+    imageMode(CENTER);
+    const starSize = 40;
+    const spacing = 50;
+    const startX = width /2 - spacing;
+    const y = 40;
+
+    for(let i = 0; i < 3; i++) {
+        if(i < score) {
+            image(starFilledImg, startX + i * spacing, y, starSize, starSize);
+        }
+        else {
+            image(starEmptyImg, startX + i * spacing, y, starSize, starSize);
+        }
+    }
 }

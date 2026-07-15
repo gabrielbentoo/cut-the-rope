@@ -28,21 +28,21 @@ function loadLevel1() {
     stars = [];
     stars.push({
         x: 510,
-        y: 300,
+        y: 350,
         collected: false,
         angle: 0
 
     });
     stars.push({
         x: 510,
-        y: 400,
+        y: 450,
         collected: false,
         angle: 0
         
     });
     stars.push({
         x: 510,
-        y: 500,
+        y: 550,
         collected: false,
         angle: 0
         
