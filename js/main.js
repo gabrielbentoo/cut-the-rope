@@ -16,6 +16,11 @@ let starImg;
 let restartImg;
 let pauseImg;
 let playImg;
+let menuBgImg;
+let lvl1Img;
+let lvl2Img;
+let lvl3Img;
+let lvlBlockedImg;
 let gameMusic;
 let breakSound;
 let ropeSound;
@@ -23,6 +28,30 @@ let star1Sound;
 let star2Sound;
 let star3Sound;
 let winSound;
+let levels = [
+    {
+        id: 1,
+        unlocked: true,
+        img: null,
+        x: 250,
+        y: 350,
+
+    },
+    {
+        id: 2,
+        unlocked: false,
+        img: null,
+        x: 510,
+        y: 350,
+    },
+    {
+        id: 3,
+        unlocked: false,
+        img: null,
+        x: 770,
+        y: 350,
+    }
+];
 
 let musicEnable = true;
 let musicStarted = false;
@@ -69,6 +98,13 @@ function preload() {
     playImg = loadImage("img/play.png");
     starFilledImg = loadImage("img/estrela-preenchida-cut-the-rope.png");
     starEmptyImg = loadImage("img/estrela-vazada-cut-the-rope.png");
+    
+    //menu
+    menuBgImg = loadImage("img/bg-lvl.png");
+    lvl1Img = loadImage("img/lvl-1.png");
+    lvl2Img = loadImage("img/lvl-2.png");
+    lvl3Img = loadImage("img/lvl-3.png");
+    lvlBlockedImg = loadImage("img/lvl-blocked.png");
 
     //sons
     gameMusic = loadSound("sounds/game-music.mp3");
@@ -100,10 +136,13 @@ function preload() {
 function setup() {
     canvas = createCanvas(1027, 768);
     engine = Engine.create();
-
+    
     world = engine.world;
     restartButton.x = width -110;
     pauseButton.x = width -45;
+    levels[0].img = lvl1Img;
+    levels[1].img = lvlBlockedImg;
+    levels[2].img = lvlBlockedImg;
 }
 
 function draw() {
@@ -422,13 +461,24 @@ function drawAudioButtons() {
 
 function mousePressed() {
     if(gameState === "menu") {
-        userStartAudio();
-        gameMusic.setVolume(0.35);
-        gameMusic.loop();
-        gameState = "playing";
-
-        loadLevel1();
-        return;
+        for(let level of levels) {
+            let d = dist(mouseX, mouseY, level.x, level.y);
+            if(d < 90) {
+                if(level.unlocked) {
+                    if(level.id === 1) {
+                        userStartAudio();
+                        if(musicEnable) {
+                            gameMusic.setVolume(0.35);
+                            gameMusic.loop();
+                        }
+                         loadLevel1();
+                         gameState = "playing";
+                    }   
+                }
+                return;
+            }
+        }
+         
     }
     if(dist(mouseX, mouseY, musicButton.x, musicButton.y) < musicButton.size / 2) {
         toggleMusic();
@@ -468,8 +518,13 @@ function toggleMusic() {
 
 function drawMenu() {
     imageMode(CORNER);
-    image(backgroundImg, 0, 0, width, height);
-    fill(0, 150);
+    image(menuBgImg, 0, 0, width, height);
+    imageMode(CENTER);
+    for(let level of levels) {
+        image(level.img, level.x, level.y, 180, 180);
+    }
+    
+    /* fill(0, 150);
     rect(0, 0, width, height);
     textAlign(CENTER);
     fill(255);
@@ -478,6 +533,7 @@ function drawMenu() {
 
     textSize(28);
     text("Clique para jogar", width /2, 300);
+    */
 }
 
 function playEffect(sound) {
