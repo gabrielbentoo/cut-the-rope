@@ -15,6 +15,8 @@ let supportImg;
 let starImg;
 let restartImg;
 let pauseImg;
+let nextImg;
+let homeImg;
 let playImg;
 let menuBgImg;
 let lvl1Img;
@@ -82,6 +84,9 @@ const musicButton = {x: 45, y: 45, size: 50};
 const effectButton = {x: 110, y: 45, size: 50};
 const restartButton = {x: 0, y: 45, size: 50};
 const pauseButton = {x: 0, y:45, size: 50};
+let restartEndButton;
+let homeButton;
+let nextButton;
 
 let cuts = [];
 
@@ -98,6 +103,8 @@ function preload() {
     playImg = loadImage("img/play.png");
     starFilledImg = loadImage("img/estrela-preenchida-cut-the-rope.png");
     starEmptyImg = loadImage("img/estrela-vazada-cut-the-rope.png");
+    homeImg = loadImage("img/home.png");
+    nextImg = loadImage("img/next.png");
     
     //menu
     menuBgImg = loadImage("img/bg-lvl.png");
@@ -143,6 +150,9 @@ function setup() {
     levels[0].img = lvl1Img;
     levels[1].img = lvlBlockedImg;
     levels[2].img = lvlBlockedImg;
+    restartEndButton = {x: width /2 -80, y: 430, size: 70};
+    homeButton = {x: width /2, y: 430, size: 70};
+    nextButton = {x: width /2 +80, y: 430, size: 70};
 }
 
 function draw() {
@@ -249,25 +259,44 @@ function checkLose() {
 
 function drawGameState() {
     if(gameState === "playing") return;
-    push();
-    fill(0, 0, 0);
-    rect(0, 0 , width, height)
+
+    //fundo
+    imageMode(CORNER);
+    image(backgroundImg, 0, 0, width, height);
+    fill(0, 0, 0, 150);
+    rect(0, 0, width, height);
+
+    //estrelas conquistadas
+    imageMode(CENTER);
+    const starSize = 60;
+    const spacing = 70;
+    let startX = width /2 -spacing;
+    for(let i = 0; i < 3; i++) {
+        let img = (i < score) ? starFilledImg : starEmptyImg;
+        image(img, startX + i * spacing, 170, starSize, starSize);
+    }
+
+    //texto
+   // push();
+   // fill(0, 0, 0);
+   // rect(0, 0 , width, height)
     textAlign(CENTER);
     textSize(40);
     fill(255);
     
     if(gameState === "win") {
-        text("You win!", width /2, 150);
+        text("You win!", width /2, 290);
         
     }
 
     if(gameState === "lose") {
-        text("You lose!", width /2, 150);
+        text("You lose!", width /2, 290);
     }
 
-    textSize(20);
+    /* textSize(20);
     text("Press R to restart", width /2, 250);
-    pop();
+     pop(); */
+    drawEndButtons();
 }
 
 function mouseDragged() {
@@ -460,6 +489,20 @@ function drawAudioButtons() {
 }
 
 function mousePressed() {
+    if(gameState == "win" || gameState == "lose"){
+        if(dist(mouseX, mouseY, restartEndButton.x, restartEndButton.y) < restartEndButton.size /2) {
+            restartLevel();
+            return;
+        } 
+        if(dist(mouseX, mouseY, homeButton.x, homeButton.y) < homeButton.size /2) {
+           gameState = "menu";
+            return;
+        }
+        if(gameState === "win" && dist(mouseX, mouseY, nextButton.x, nextButton.y) < nextButton.size /2) {
+            console.log("Proxima fase");
+            return;
+        } 
+    }
     if(gameState === "menu") {
         for(let level of levels) {
             let d = dist(mouseX, mouseY, level.x, level.y);
@@ -635,4 +678,30 @@ function drawStarScore() {
             image(starEmptyImg, startX + i * spacing, y, starSize, starSize);
         }
     }
+}
+
+function drawEndButtons() {
+    imageMode(CENTER);
+    drawButton(restartImg, restartEndButton);
+    drawButton(homeImg, homeButton);
+    if(gameState == "win") {
+        drawButton(nextImg, nextButton);
+    }
+}
+
+function drawButton(img, button) {
+    let hover = dist(mouseX, mouseY, button.x, button.y) < button.size /2;
+    push();
+    translate(button.x, button.y);
+
+    if(hover) {
+        scale(1.12);
+        tint(255);
+    } 
+    else{
+        tint(255, 210);
+    }
+    image(img, 0, 0, button.size, button.size);
+    pop();
+    noTint();
 }
