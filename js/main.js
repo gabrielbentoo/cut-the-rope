@@ -12,7 +12,11 @@ let candy;
 let candyCon;
 let ground;
 let supportImg;
+
 let starImg;
+let starDisappearFrames = [];
+let starDisappearFrameDelay = 5;
+
 let restartImg;
 let pauseImg;
 let nextImg;
@@ -96,6 +100,10 @@ function preload() {
     supportImg = loadImage("img/support1.png");
     candyImg = loadImage("img/candy.png");
     starImg = loadImage("img/star-cut-the-rope.png");
+    starDisappearFrames.push(loadImage("img/obj_star_disappear_1.png"));
+    starDisappearFrames.push(loadImage("img/obj_star_disappear_2.png"));
+    starDisappearFrames.push(loadImage("img/obj_star_disappear_3.png"));
+
     bgSoundImg = loadImage("img/bg-sound.png");
     speakerImg = loadImage("img/speaker.png");
     pauseImg = loadImage("img/pause.png");
@@ -370,6 +378,17 @@ function restartLevel() {
 function drawStars() {
     imageMode(CENTER);
     for(let star of stars) {
+        if(star.disappearing) {
+            let frame = floor(star.disappearFrame / starDisappearFrameDelay);
+            if(frame < starDisappearFrames.length) {
+                image(starDisappearFrames[frame], star.x, star.y, 80, 80);
+                star.disappearFrame++;
+            }
+            else{
+                star.disappearing = false;
+            }
+            continue;
+        }
         if(star.collected) continue;
         push();
         translate(star.x, star.y);
@@ -383,12 +402,16 @@ function drawStars() {
 
 function checkStars() {
     if(!candy) return;
+
     for(let star of stars) {
+        if(star.disappearing) continue;
         if(star.collected) continue;
         let d = dist(candy.position.x, candy.position.y, star.x, star.y);
 
         if(d < 40) {
             star.collected = true;
+            star.disappearing = true;
+            star.disappearFrame = 0;
             score++;
             switch(score) {
                 case 1: 
