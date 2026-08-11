@@ -91,6 +91,7 @@ const pauseButton = {x: 0, y:45, size: 50};
 let restartEndButton;
 let homeButton;
 let nextButton;
+let currentLevel = 1;
 
 let cuts = [];
 
@@ -371,7 +372,7 @@ function restartLevel() {
     stars = [];
     score = 0;
     gameState = "playing";
-    loadLevel1();
+    loadCurrentLevel();
     
 }
 
@@ -518,13 +519,16 @@ function mousePressed() {
             return;
         } 
         if(dist(mouseX, mouseY, homeButton.x, homeButton.y) < homeButton.size /2) {
+            clearLevel();
+            currentLevel = 1;
            gameState = "menu";
             return;
         }
         if(gameState === "win" && dist(mouseX, mouseY, nextButton.x, nextButton.y) < nextButton.size /2) {
-            console.log("Proxima fase");
+            nextLevel();
             return;
         } 
+
     }
     if(gameState === "menu") {
         for(let level of levels) {
@@ -537,7 +541,8 @@ function mousePressed() {
                             gameMusic.setVolume(0.35);
                             gameMusic.loop();
                         }
-                         loadLevel1();
+                        currentLevel = level.id;
+                         loadCurrentLevel();
                          gameState = "playing";
                     }   
                 }
@@ -728,3 +733,43 @@ function drawButton(img, button) {
     pop();
     noTint();
 }
+
+function clearLevel() {
+    if(candy) {
+        World.remove(world, candy);
+        candy = null;
+    }
+    if(candyCon) {
+        candyCon.detach();
+        candyCon = null;
+    }
+    if(rope && rope.body) {
+        Composite.remove(world, rope.body);
+        rope = null;
+    }
+    if(ground && ground.body) {
+        World.remove(world, ground.body);
+        ground = null;
+    } 
+    stars = [];
+    score = 0;
+ }
+
+ function loadCurrentLevel() {
+    if(currentLevel === 1) {
+        loadLevel1();
+    }
+    else if(currentLevel === 2){
+        loadLevel2();
+    }
+ }
+
+ function nextLevel() {
+    if(currentLevel >= 2) {
+        return;
+    }
+    clearLevel();
+    currentLevel++;
+    loadCurrentLevel();
+    gameState = "playing";
+ }

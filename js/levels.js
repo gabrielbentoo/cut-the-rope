@@ -56,3 +56,7 @@ function loadLevel1() {
 
     gameState = "playing";
 }
+
+function loadLevel2() {
+    pins = [];
+}
