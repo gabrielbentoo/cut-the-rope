@@ -10,6 +10,7 @@ let backgroundImg;
 let candyImg;
 let candy;
 let candyCon;
+let candyCons = [];
 let ground;
 let supportImg;
 
@@ -72,6 +73,7 @@ let frameDelay = 15;
 let omNom = { x: 505, y: 670, size: 160};
 
 let rope;
+let ropes = [];
 let pinImg;
 let gameState = "menu";
 
