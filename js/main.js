@@ -70,7 +70,7 @@ let paused = false;
 let omNomFrames = [];
 let currentFrame = 0;
 let frameDelay = 15;
-let omNom = { x: 505, y: 670, size: 160};
+let omNom = {};
 
 let rope;
 let ropes = [];
@@ -194,8 +194,12 @@ function draw() {
     }
     
     imageMode(CENTER);
-    image(supportImg, 505, 720, 160, 160);
-    drawOmNom();
+    
+    if (gameState === "playing" && candy && ropes.length > 0) {
+        drawOmNom2();
+    } else {
+        drawOmNom();
+    }
 
     if(candy) {
         image(candyImg, candy.position.x, candy.position.y, 60, 60);
@@ -226,15 +230,7 @@ function draw() {
     }
 }
 
-function drawOmNom() {
-    if(frameCount % frameDelay === 0) {
-        currentFrame++;
-        if(currentFrame >= omNomFrames.length) {
-            currentFrame = 0;
-        }
-    }
-    image(omNomFrames[currentFrame], omNom.x, omNom.y, omNom.size, omNom.size);
-}
+
 
 function drawPins() {
     imageMode(CENTER);

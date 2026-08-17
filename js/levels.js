@@ -1,6 +1,31 @@
 let pins = [];
 
 
+
+function drawOmNom() {
+    omNom = { x: 505, y: 670, size: 160};
+    if(frameCount % frameDelay === 0) {
+        currentFrame++;
+        if(currentFrame >= omNomFrames.length) {
+            currentFrame = 0;
+        }
+    }
+    image(supportImg, 505, 720, 160, 160);
+    image(omNomFrames[currentFrame], omNom.x, omNom.y, omNom.size, omNom.size);
+}
+function drawOmNom2() {
+    omNom = { x: 515, y: 60, size: 160 };
+
+    if(frameCount % frameDelay === 0) {
+        currentFrame++;
+        if(currentFrame >= omNomFrames.length) {
+            currentFrame = 0;
+        }
+    }
+    image(supportImg, 515, 100, 160, 160);
+    image(omNomFrames[currentFrame], omNom.x, omNom.y, omNom.size, omNom.size);
+}
+
 function loadLevel1() {
    /* engine = Engine.create();
     world = engine.world;
@@ -53,6 +78,7 @@ function loadLevel1() {
         disappearFrame: 0
         
     });
+    drawOmNom();
 
     gameState = "playing";
 }
@@ -65,18 +91,18 @@ function loadLevel2() {
     candyCons = [];
 
     const topPin = {
-        x: 452,
-        y: 117,
+        x: 520,
+        y: 180,
         size: 40
     };
     const rightPin = {
-        x: 522,
-        y: 217,
+        x: 610,
+        y: 430,
         size: 40
     };
     const leftPin = {
         x: 382,
-        y: 300,
+        y: 520,
         size: 40
     };
 
@@ -109,7 +135,7 @@ function loadLevel2() {
     stars = [
         {
         x: 383,
-        y: 215,
+        y: 250,
         collected: false,
         angle: 0,
         disappearing: false,
@@ -118,7 +144,7 @@ function loadLevel2() {
     },
     {
         x: 383,
-        y: 280,
+        y: 320,
         collected: false,
         angle: 0,
         disappearing: false,
@@ -126,8 +152,8 @@ function loadLevel2() {
         
     },
     {
-        x: 450,
-        y: 415,
+        x: 490,
+        y: 565,
         collected: false,
         angle: 0,
         disappearing: false,
@@ -136,6 +162,6 @@ function loadLevel2() {
     }
     ]
     
-
+    drawOmNom2();
     gameState = "playing";
 }
