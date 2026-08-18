@@ -96,13 +96,13 @@ function loadLevel2() {
         size: 40
     };
     const rightPin = {
-        x: 610,
-        y: 430,
+        x: 640,
+        y: 500,
         size: 40
     };
     const leftPin = {
-        x: 382,
-        y: 520,
+        x: 362,
+        y: 610,
         size: 40
     };
 
@@ -135,7 +135,7 @@ function loadLevel2() {
     stars = [
         {
         x: 383,
-        y: 250,
+        y: 335,
         collected: false,
         angle: 0,
         disappearing: false,
@@ -144,7 +144,7 @@ function loadLevel2() {
     },
     {
         x: 383,
-        y: 320,
+        y: 405,
         collected: false,
         angle: 0,
         disappearing: false,
@@ -153,7 +153,7 @@ function loadLevel2() {
     },
     {
         x: 490,
-        y: 565,
+        y: 650,
         collected: false,
         angle: 0,
         disappearing: false,

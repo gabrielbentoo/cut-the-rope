@@ -193,6 +193,19 @@ function draw() {
         drawCuts();
     }
     
+    if(ropeTop) {
+        ropeTop.display();
+        drawCuts();
+    }
+    if(ropeRight) {
+        ropeRight.display();
+        drawCuts();
+    }
+    if(ropeLeft) {
+        ropeLeft.display();
+        drawCuts();
+    }
+
     imageMode(CENTER);
     
     if (gameState === "playing" && candy && ropes.length > 0) {
