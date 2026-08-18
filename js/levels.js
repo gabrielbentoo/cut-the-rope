@@ -92,12 +92,12 @@ function loadLevel2() {
 
     const topPin = {
         x: 520,
-        y: 180,
+        y: 200,
         size: 40
     };
     const rightPin = {
         x: 640,
-        y: 500,
+        y: 480,
         size: 40
     };
     const leftPin = {
@@ -110,13 +110,13 @@ function loadLevel2() {
     pins.push(rightPin);
     pins.push(leftPin);
 
-    let ropeTop = new Rope(5, { x: topPin.x, y: topPin.y});
+    let ropeTop = new Rope(8, { x: topPin.x, y: topPin.y -15});
     ropes.push(ropeTop);
 
-    let ropeRight = new Rope(3, { x: rightPin.x, y: rightPin.y});
+    let ropeRight = new Rope(6, { x: rightPin.x, y: rightPin.y});
     ropes.push(ropeRight);
 
-    let ropeLeft = new Rope(3, { x: leftPin.x, y: leftPin.y});
+    let ropeLeft = new Rope(5, { x: leftPin.x, y: leftPin.y});
     ropes.push(ropeLeft);
     
     ground = new Ground(width /2, height + 500, width, 20);
@@ -128,9 +128,13 @@ function loadLevel2() {
         frictionAir: 0.01
     });
     World.add(world, candy);
+
     let conTop = new Link(ropeTop, candy);
     let conRight = new Link(ropeRight, candy);
     let conLeft = new Link(ropeLeft, candy);
+    candyCons.push(conTop);
+    candyCons.push(conRight);
+    candyCons.push(conLeft);
     
     stars = [
         {

@@ -188,7 +188,7 @@ function draw() {
         ground.display();
     }
 
-    if(rope) {
+   /* if(rope) {
         rope.display();
         drawCuts();
     }
@@ -204,7 +204,14 @@ function draw() {
     if(ropeLeft) {
         ropeLeft.display();
         drawCuts();
-    }
+    } */
+   if(rope) {
+    rope.display();
+   }
+   for(let r of ropes) {
+    r.display();
+   }
+   drawCuts();
 
     imageMode(CENTER);
     
@@ -370,10 +377,24 @@ function restartLevel() {
         candyCon = null;
     }
 
+    for(let con of candyCons) {
+        if(con) {
+            con.detach();
+        }
+    }
+    candyCons = [];
+
     if(rope && rope.body) {
         Composite.remove(world, rope.body);
         rope = null;
     }
+
+    for(let r of ropes) {
+        if(r && r.body) {
+            Composite.remove(world, r.body);
+        }
+    }
+    ropes = [];
 
     if(ground && ground.body) {
         World.remove(world, ground.body);
