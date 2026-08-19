@@ -83,6 +83,8 @@ let starFilledImg;
 let starEmptyImg;
 
 let bgSoundImg;
+let bubbleImg;
+let bubbleActive = false;
 let speakerImg;
 let effectEnable = true;
 
@@ -147,7 +149,7 @@ function preload() {
     omNomFrames.push(loadImage("img/om-nom6.png"));
 
     pinImg = loadImage("img/pino-parede.png");
-    
+    bubbleImg = loadImage("img/bubble.png");
 
 }
 
@@ -172,14 +174,21 @@ function draw() {
     imageMode(CORNER);
 
     image(backgroundImg, 0, 0, width, height);
+    if(!paused) {
+        Engine.update(engine, deltaTime);
+
+    }
+    checkBubble();
+    updateBubble();
+
     if(gameState === "menu") {
         drawMenu();
         return;
     }
     
-    if(!paused) {
+     /* if(!paused) {
         Engine.update(engine, deltaTime);
-    }
+    } */
     
     drawStars();
     drawPins();
@@ -215,7 +224,7 @@ function draw() {
 
     imageMode(CENTER);
     
-    if (gameState === "playing" && candy && ropes.length > 0) {
+    if (gameState === "playing" && currentLevel === 2) {
         drawOmNom2();
     } else {
         drawOmNom();
@@ -224,6 +233,7 @@ function draw() {
     if(candy) {
         image(candyImg, candy.position.x, candy.position.y, 60, 60);
     }
+    drawBubble()
     
    
     checkStars();
@@ -330,35 +340,60 @@ function mouseDragged() {
     if(paused) return;
     if(gameState !== "playing") return;
     
-    if(!rope) return;
+    let allRopes = [];
+    if(rope) {
+        allRopes.push(rope);
+    }
+    // if(!rope) return;
 
-    for(let body of rope.body.bodies) {
-        let d = dist(mouseX, mouseY, body.position.x, body.position.y);
-
-        if(d < 20) {
-            playEffect(ropeSound);
-            cuts.push({
-                x1: pmouseX,
-                y1: pmouseY,
-                x2: mouseX,
-                y2: mouseY,
-                life: 12
-            });
-
-            rope.break();
-
-            if(candyCon) {
-                candyCon.detach();
-                candyCon = null;
-            }
-            World.remove(world, rope);
-
-            break;
-        }
+    for(let r of ropes) {
+        allRopes.push(r);
     }
 
-    
+    for(let r of allRopes) {
+        for(let body of r.body.bodies) {
+            let d = dist(mouseX, mouseY, body.position.x, body.position.y);
+
+            if(d < 20) {
+                playEffect(ropeSound);
+                cuts.push({
+                    x1: pmouseX,
+                    y1: pmouseY,
+                    x2: mouseX,
+                    y2: mouseY,
+                    life: 12
+                });
+
+                r.break();
+                if(r === rope) {
+                    if(candyCon) {
+                        candyCon.detach();
+                        candyCon = null;
+                    }
+                    Composite.remove(world, r.body);
+                    rope = null;
+                }
+                else{
+                    let index = ropes.indexOf(r);
+                    if(index !== -1) {
+                        if(candyCons[index]) {
+                            candyCons[index].detach();
+                            candyCons.splice(index, 1);
+                        }
+                        Composite.remove(world, r.body); 
+                        ropes.splice(index, 1);
+                    }
+                }
+                
+                 // World.remove(world, rope);
+
+               // break;
+               return;
+            }
+        }
+    }
 }
+    
 
 function keyPressed() {
     if(key === "r" || key === "R") {
@@ -367,6 +402,7 @@ function keyPressed() {
 }
 
 function restartLevel() {
+    bubbleActive = false;
     if(candy) {
         World.remove(world, candy);
         candy = null;
@@ -423,6 +459,9 @@ function drawStars() {
             continue;
         }
         if(star.collected) continue;
+        if(currentLevel === 2 && star.x === 490 && star.y === 650) {
+            image(bubbleImg, star.x, star.y, 80, 80);
+        }
         push();
         translate(star.x, star.y);
         let scaleX = abs(cos(star.angle));
@@ -767,6 +806,7 @@ function drawButton(img, button) {
 }
 
 function clearLevel() {
+    bubbleActive = false;
     if(candy) {
         World.remove(world, candy);
         candy = null;
@@ -775,10 +815,28 @@ function clearLevel() {
         candyCon.detach();
         candyCon = null;
     }
+
+    for(let con of candyCons) {
+        if(con) {
+            con.detach();
+        }
+    }
+
+    candyCons = [];
+
     if(rope && rope.body) {
         Composite.remove(world, rope.body);
         rope = null;
     }
+
+    for(let r of ropes) {
+        if(r && r.body) {
+            Composite.remove(world, r.body);
+        }
+    }
+
+    ropes = [];
+
     if(ground && ground.body) {
         World.remove(world, ground.body);
         ground = null;
@@ -805,3 +863,31 @@ function clearLevel() {
     loadCurrentLevel();
     gameState = "playing";
  }
+
+function checkBubble() {
+    if(currentLevel !== 2) return;
+    if(!candy) return;
+    if(bubbleActive) return;
+    const bubbleX = 490;
+    const bubbleY = 650;
+    let d = dist(candy.position.x, candy.position.y, bubbleX, bubbleY);
+    if(d < 45) {
+        bubbleActive = true;
+    }
+}
+
+function drawBubble() {
+    if(!bubbleActive) return;
+    if(!candy) return;
+    imageMode(CENTER);
+    image(bubbleImg, candy.position.x, candy.position.y, 80, 80);
+}
+
+function updateBubble() {
+    if(!bubbleActive) return;
+    if(!candy) return;
+    Matter.Body.setVelocity(candy, {
+        x: candy.velocity.x, 
+        y: -4
+    })
+}
