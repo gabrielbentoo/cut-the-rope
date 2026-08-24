@@ -85,6 +85,7 @@ let starEmptyImg;
 let bgSoundImg;
 let bubbleImg;
 let bubbleActive = false;
+let bubblePopped = false;
 let speakerImg;
 let effectEnable = true;
 
@@ -402,6 +403,7 @@ function keyPressed() {
 }
 
 function restartLevel() {
+    bubblePopped = false;
     bubbleActive = false;
     if(candy) {
         World.remove(world, candy);
@@ -585,6 +587,14 @@ function drawAudioButtons() {
 
 function mousePressed() {
     if(gameState == "win" || gameState == "lose"){
+        if(currentLevel === 2 && gameState === "playing" && bubbleActive && candy) {
+            let d = dist(mouseX, mouseY, candy.position.x, candy.position.y);
+
+            if(d < 60) {
+                popBubble();
+                return;
+            }
+        }
         if(dist(mouseX, mouseY, restartEndButton.x, restartEndButton.y) < restartEndButton.size /2) {
             restartLevel();
             return;
@@ -806,6 +816,7 @@ function drawButton(img, button) {
 }
 
 function clearLevel() {
+    bubblePopped = false;
     bubbleActive = false;
     if(candy) {
         World.remove(world, candy);
@@ -868,11 +879,13 @@ function checkBubble() {
     if(currentLevel !== 2) return;
     if(!candy) return;
     if(bubbleActive) return;
+    if(bubblePopped) return;
     const bubbleX = 490;
     const bubbleY = 650;
     let d = dist(candy.position.x, candy.position.y, bubbleX, bubbleY);
     if(d < 45) {
         bubbleActive = true;
+        bubblePopped = false;
     }
 }
 
@@ -889,5 +902,16 @@ function updateBubble() {
     Matter.Body.setVelocity(candy, {
         x: candy.velocity.x, 
         y: -4
+    })
+}
+
+function popBubble() {
+    if(!bubbleActive) return;
+    if(!candy) return;
+    bubbleActive = false;
+    bubblePopped = true;
+    Matter.Body.setVelocity(candy, {
+        x: candy.velocity.x,
+        y: 0
     })
 }

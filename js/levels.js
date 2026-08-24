@@ -89,6 +89,7 @@ function loadLevel2() {
     stars = [];
     ropes = [];
     candyCons = [];
+    bubblePopped = false;
     bubbleActive = false;
 
     const topPin = {
@@ -139,7 +140,7 @@ function loadLevel2() {
     
     stars = [
         {
-        x: 383,
+        x: 403,
         y: 335,
         collected: false,
         angle: 0,
@@ -148,7 +149,7 @@ function loadLevel2() {
 
     },
     {
-        x: 383,
+        x: 403,
         y: 405,
         collected: false,
         angle: 0,
