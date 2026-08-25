@@ -586,8 +586,7 @@ function drawAudioButtons() {
 }
 
 function mousePressed() {
-    if(gameState == "win" || gameState == "lose"){
-        if(currentLevel === 2 && gameState === "playing" && bubbleActive && candy) {
+    if(currentLevel === 2 && gameState === "playing" && bubbleActive && candy) {
             let d = dist(mouseX, mouseY, candy.position.x, candy.position.y);
 
             if(d < 60) {
@@ -595,6 +594,8 @@ function mousePressed() {
                 return;
             }
         }
+    if(gameState == "win" || gameState == "lose"){
+        
         if(dist(mouseX, mouseY, restartEndButton.x, restartEndButton.y) < restartEndButton.size /2) {
             restartLevel();
             return;
@@ -914,4 +915,5 @@ function popBubble() {
         x: candy.velocity.x,
         y: 0
     })
+    Matter.Body.setStatic(candy, false);
 }
