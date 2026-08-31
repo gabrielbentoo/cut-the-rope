@@ -25,6 +25,18 @@ function drawOmNom2() {
     image(supportImg, 515, 100, 160, 160);
     image(omNomFrames[currentFrame], omNom.x, omNom.y, omNom.size, omNom.size);
 }
+function drawOmNom3() {
+    omNom = { x: 635, y: 670, size: 160 };
+
+    if(frameCount % frameDelay === 0) {
+        currentFrame++;
+        if(currentFrame >= omNomFrames.length) {
+            currentFrame = 0;
+        }
+    }
+    image(supportImg, 635, 720, 160, 160);
+    image(omNomFrames[currentFrame], omNom.x, omNom.y, omNom.size, omNom.size);
+}
 
 function loadLevel1() {
    /* engine = Engine.create();
@@ -169,5 +181,151 @@ function loadLevel2() {
     ]
     
     drawOmNom2();
+    gameState = "playing";
+}
+
+function loadLevel3() {
+
+    // Reset da fase
+    score = 0;
+    pins = [];
+    stars = [];
+    ropes = [];
+    candyCons = [];
+
+    bubblePopped = false;
+    bubbleActive = false;
+
+    // =========================
+    // PINO SUPERIOR
+    // =========================
+
+    const topPin = {
+        x: width / 2,
+        y: 170,
+        size: 40
+    };
+
+    pins.push(topPin);
+
+    // =========================
+    // CORDA
+    // =========================
+
+    let ropeTop = new Rope(6, {
+        x: topPin.x,
+        y: topPin.y
+    });
+
+    ropes.push(ropeTop);
+
+    // =========================
+    // CHÃO
+    // =========================
+
+    ground = new Ground(
+        width / 2,
+        height + 500,
+        width,
+        20
+    );
+
+    // =========================
+    // DOCE
+    // =========================
+
+    candy = Bodies.circle(
+        width / 2,
+        250,
+        25,
+        {
+            density: 0.0002,
+            restitution: 1,
+            friction: 0.2,
+            frictionAir: 0.01
+        }
+    );
+
+    World.add(world, candy);
+
+    // Conecta a corda ao doce
+    let conTop = new Link(
+        ropeTop,
+        candy
+    );
+
+    candyCons.push(conTop);
+
+    // =========================
+    // OBSTÁCULOS AZUIS
+    // =========================
+
+    obstacles = [];
+
+    // Obstáculo da esquerda
+    obstacles.push({
+        x: 335,
+        y: 245,
+        size: 70
+    });
+
+    // Obstáculo da direita
+    obstacles.push({
+        x: 575,
+        y: 245,
+        size: 70
+    });
+
+    // Obstáculo central inferior
+    obstacles.push({
+        x: width / 2,
+        y: 335,
+        size: 70
+    });
+
+    // =========================
+    // ESTRELAS
+    // =========================
+
+    stars = [
+
+        // Estrela superior esquerda
+        {
+            x: 315,
+            y: 155,
+            collected: false,
+            angle: 0,
+            disappearing: false,
+            disappearFrame: 0
+        },
+
+        // Estrela superior direita
+        {
+            x: 675,
+            y: 155,
+            collected: false,
+            angle: 0,
+            disappearing: false,
+            disappearFrame: 0
+        },
+
+        // Estrela no meio da corda
+        {
+            x: width / 2,
+            y: 305,
+            collected: false,
+            angle: 0,
+            disappearing: false,
+            disappearFrame: 0
+        }
+    ];
+
+    // =========================
+    // OM NOM
+    // =========================
+
+    drawOmNom3();
+
+    // Começa a fase
     gameState = "playing";
 }

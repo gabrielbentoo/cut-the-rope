@@ -97,8 +97,11 @@ let restartEndButton;
 let homeButton;
 let nextButton;
 let currentLevel = 1;
+let sopradorImg;
+let sopradorFrames = [];
 
 let cuts = [];
+
 
 
 function preload() {
@@ -148,6 +151,18 @@ function preload() {
     omNomFrames.push(loadImage("img/om-nom4.png"));
     omNomFrames.push(loadImage("img/om-nom5.png"));
     omNomFrames.push(loadImage("img/om-nom6.png"));
+
+
+    //soprador
+    sopradorImg = loadImage("img/soprador1.png");
+    sopradorFrames.push(loadImage("img/soprador1.png"));
+    sopradorFrames.push(loadImage("img/soprador2.png"));
+    sopradorFrames.push(loadImage("img/soprador3.png"));
+    sopradorFrames.push(loadImage("img/soprador4.png"));
+    sopradorFrames.push(loadImage("img/soprador5.png"));
+    sopradorFrames.push(loadImage("img/soprador6.png"));
+
+    
 
     pinImg = loadImage("img/pino-parede.png");
     bubbleImg = loadImage("img/bubble.png");
@@ -225,11 +240,20 @@ function draw() {
 
     imageMode(CENTER);
     
-    if (gameState === "playing" && currentLevel === 2) {
-        drawOmNom2();
-    } else {
+    if (gameState === "playing") {
+
+    if (currentLevel === 1) {
         drawOmNom();
     }
+
+    else if (currentLevel === 2) {
+        drawOmNom2();
+    }
+
+    else if (currentLevel === 3) {
+        drawOmNom3();
+    }
+}
 
     if(candy) {
         image(candyImg, candy.position.x, candy.position.y, 60, 60);
@@ -857,16 +881,47 @@ function clearLevel() {
     score = 0;
  }
 
- function loadCurrentLevel() {
+function loadCurrentLevel() {
+
     if(currentLevel === 1) {
         loadLevel1();
     }
-    else if(currentLevel === 2){
+
+    else if(currentLevel === 2) {
         loadLevel2();
     }
- }
 
- function nextLevel() {
+    else if(currentLevel === 3) {
+        loadLevel3();
+    }
+}
+function nextLevel() {
+
+    if (currentLevel >= 3) {
+        return;
+    }
+
+    clearLevel();
+
+    currentLevel++;
+
+    // Libera a próxima fase
+    if (currentLevel === 2) {
+        levels[1].unlocked = true;
+        levels[1].img = lvl2Img;
+    }
+
+    if (currentLevel === 3) {
+        levels[2].unlocked = true;
+        levels[2].img = lvl3Img;
+    }
+
+    loadCurrentLevel();
+
+    gameState = "playing";
+}
+
+/* function nextLevel() {
     if(currentLevel >= 2) {
         return;
     }
@@ -874,7 +929,7 @@ function clearLevel() {
     currentLevel++;
     loadCurrentLevel();
     gameState = "playing";
- }
+ } */
 
 function checkBubble() {
     if(currentLevel !== 2) return;
