@@ -256,32 +256,43 @@ function loadLevel3() {
 
     candyCons.push(conTop);
 
-    // =========================
-    // OBSTÁCULOS AZUIS
-    // =========================
+    sopradores = [];
 
-    obstacles = [];
+// Soprador da esquerda
+sopradores.push({
+    x: 335,
+    y: 345,
+    size: 70,
+    directionX: 0.5,
+    directionY: 0,
+    active: false,
+    frame: 0,
+    frameCounter: 0
+});
 
-    // Obstáculo da esquerda
-    obstacles.push({
-        x: 335,
-        y: 245,
-        size: 70
-    });
+// Soprador da direita
+sopradores.push({
+    x: 655,
+    y: 345,
+    size: 70,
+    directionX: -0.5,
+    directionY: 0,
+    active: false,
+    frame: 0,
+    frameCounter: 0
+});
 
-    // Obstáculo da direita
-    obstacles.push({
-        x: 575,
-        y: 245,
-        size: 70
-    });
-
-    // Obstáculo central inferior
-    obstacles.push({
-        x: width / 2,
-        y: 335,
-        size: 70
-    });
+// Soprador inferior
+sopradores.push({
+    x: width / 2,
+    y: 505,
+    size: 70,
+    directionX: 0,
+    directionY: -0.5,
+    active: false,
+    frame: 0,
+    frameCounter: 0
+});
 
     // =========================
     // ESTRELAS
@@ -328,4 +339,120 @@ function loadLevel3() {
 
     // Começa a fase
     gameState = "playing";
+}
+
+function drawSopradores() {
+
+    if (currentLevel !== 3) return;
+
+    imageMode(CENTER);
+
+    for (let i = 0; i < sopradores.length; i++) {
+
+        let soprador = sopradores[i];
+
+        push();
+
+        // Posiciona o soprador
+        translate(soprador.x, soprador.y);
+
+        // ============================
+        // ROTAÇÃO
+        // ============================
+
+        // Soprador esquerdo
+        if (i === 0) {
+            rotate(PI / 2); // 45° horário
+        }
+
+        // Soprador direito
+        if (i === 1) {
+            rotate(-PI / 2); // 45° anti-horário
+        }
+
+        // Soprador inferior
+        if (i === 2) {
+            rotate(0); // sem rotação
+        }
+
+        // ============================
+        // ANIMAÇÃO
+        // ============================
+
+        if (soprador.active) {
+
+            soprador.frameCounter++;
+
+            if (soprador.frameCounter >= 3) {
+
+                soprador.frameCounter = 0;
+                soprador.frame++;
+
+                if (soprador.frame >= sopradorFrames.length) {
+
+                    soprador.frame = 0;
+                    soprador.active = false;
+                }
+            }
+
+            image(
+                sopradorFrames[soprador.frame],
+                0,
+                0,
+                soprador.size,
+                soprador.size
+            );
+
+        } else {
+
+            image(
+                sopradorImg,
+                0,
+                0,
+                soprador.size,
+                soprador.size
+            );
+        }
+
+        pop();
+    }
+}
+
+function ativarSoprador(soprador) {
+
+    if(!candy) return;
+
+    soprador.active = true;
+    soprador.frame = 0;
+    soprador.frameCounter = 0;
+
+    Matter.Body.applyForce(
+        candy,
+        candy.position,
+        {
+            x: soprador.directionX * 0.015,
+            y: soprador.directionY * 0.015
+        }
+    );
+}
+
+function atualizarSopradores() {
+
+    if(currentLevel !== 3) return;
+    if(!candy) return;
+
+    for(let soprador of sopradores) {
+
+        if(soprador.active) {
+
+            Matter.Body.applyForce(
+                candy,
+                candy.position,
+                {
+                    x: soprador.directionX * 0.0015,
+                    y: soprador.directionY * 0.0015
+                }
+            );
+        }
+    }
 }

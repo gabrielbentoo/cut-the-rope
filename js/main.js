@@ -99,6 +99,7 @@ let nextButton;
 let currentLevel = 1;
 let sopradorImg;
 let sopradorFrames = [];
+let sopradores = [];
 
 let cuts = [];
 
@@ -208,6 +209,8 @@ function draw() {
     
     drawStars();
     drawPins();
+    drawSopradores();
+    atualizarSopradores(); 
 
     if(ground) {
         ground.display();
@@ -657,6 +660,28 @@ function mousePressed() {
         }
          
     }
+
+    // Clique nos sopradores
+    if(currentLevel === 3 && gameState === "playing" && !paused) {
+
+        for(let soprador of sopradores) {
+
+            let d = dist(
+                mouseX,
+                mouseY,
+                soprador.x,
+                soprador.y
+            );
+
+            if(d < soprador.size / 2) {
+
+                ativarSoprador(soprador);
+
+                return;
+            }
+        }
+    }
+
     if(dist(mouseX, mouseY, musicButton.x, musicButton.y) < musicButton.size / 2) {
         toggleMusic();
         return;
